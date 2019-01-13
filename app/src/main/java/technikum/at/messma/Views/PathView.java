@@ -66,7 +66,6 @@ public class PathView extends View{
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawPath(path, paint);
-
     }
 
     public void drawStartPoint(GridPoint gridPoint) {
