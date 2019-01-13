@@ -39,27 +39,14 @@ public class PathView extends View{
         paint.setColor(Color.GREEN);
         paint.setStrokeWidth(6);
         paint.setStyle(Paint.Style.STROKE);
-
-        GridPoint gp1 = new GridPoint("2", "200","200");
-        GridPoint gp2 = new GridPoint("3", "700","200");
-        GridPoint gp3 = new GridPoint("4", "700","500");
-        GridPoint gp4 = new GridPoint("5", "500","500");
-
-        List<GridPoint> gps = new LinkedList<>();
-        gps.add(gp1);
-        gps.add(gp2);
-        gps.add(gp3);
-        gps.add(gp4);
         path = new Path();
-
-        //drawPath(gps);
     }
 
     public void drawPath(List<GridPoint> gps) {
 
         if(gps.size() > 1) {
-            int x = Integer.parseInt(gps.get(0).getPosX());
-            int y = Integer.parseInt(gps.get(0).getPosY());
+            int x = gps.get(0).getPosX();
+            int y = gps.get(0).getPosY();
 
             path.moveTo(x,y);
 
@@ -68,7 +55,7 @@ public class PathView extends View{
             gps.remove(0);
 
             for (GridPoint gp : gps) {
-                path.lineTo(Integer.parseInt(gp.getPosX()), Integer.parseInt(gp.getPosY()));
+                path.lineTo(gp.getPosX(), gp.getPosY());
             }
 
 
