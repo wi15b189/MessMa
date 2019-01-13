@@ -13,6 +13,7 @@ import android.net.wifi.WifiManager;
 import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import technikum.at.messma.Entities.AccessPoint;
@@ -21,44 +22,12 @@ import technikum.at.messma.MainActivity;
 
 public class APScanner {
 
-    WifiManager wifiManager;
-    Context con;
-    private ArrayList<AccessPoint> arrayList = new ArrayList<>();
-    private List<ScanResult> tmpScanResults;
-
-    BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            tmpScanResults = wifiManager.getScanResults();
-            //https://androidforums.com/threads/wifimanager-getscanresults-always-returns-empty-list.1266068/
-            //need to enable permission to access localization service
-            for (ScanResult scanResult : tmpScanResults) {
-                //if(filterAP(scanResult.BSSID)){
-                arrayList.add(new AccessPoint(scanResult.BSSID, 0, true, scanResult.SSID, scanResult.level));
-                //}
-            }
-            con.unregisterReceiver(this);
-        }
-    };
-
-    public APScanner(WifiManager wifiManager, MainActivity mainActivity){
-        this.wifiManager = wifiManager;
-        con = mainActivity;
-    }
-
-    private void scanWifi(){
-        con.registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        wifiManager.startScan();
-        //Toast.makeText(this, "Scanning WiFi ...", Toast.LENGTH_SHORT).show();
-    }
+    WifiManager wifi;
+    List<ScanResult> results;
+    int size = 0;
+    List<AccessPoint> accessPoints = new LinkedList<>();
 
 
-
-    public List<AccessPoint> getScanResults(){
-        arrayList.clear();
-        scanWifi();
-        return arrayList;
-    }
 
 
     /*
