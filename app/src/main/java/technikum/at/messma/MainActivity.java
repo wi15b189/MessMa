@@ -11,46 +11,78 @@ import java.util.LinkedList;
 import java.util.List;
 
 import technikum.at.messma.Entities.GridPoint;
+import technikum.at.messma.Entities.Stand;
+import technikum.at.messma.Service.APScanner;
+import technikum.at.messma.Service.NavigationAPIService;
 import technikum.at.messma.Views.PathView;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
     private PathView navPath;
+    private NavigationAPIService APIService = new NavigationAPIService();
+    //private APScanner scanner = new APScanner(getApplicationContext());
+    private List<Stand> stands;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            //Initialize StandGP
+            GridPoint standGP = null;
             switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
-
-                    GridPoint gp1 = new GridPoint("2", "200","200");
-                    GridPoint gp2 = new GridPoint("3", "700","200");
-                    GridPoint gp3 = new GridPoint("4", "700","500");
-                    GridPoint gp4 = new GridPoint("5", "500","500");
-
-
-
-                    List<GridPoint> gps = new LinkedList<>();
-                    gps.add(gp1);
-                    gps.add(gp2);
-                    gps.add(gp3);
-                    gps.add(gp4);
-
-                    navPath.drawPath(gps);
-                    return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
-                    return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
-                    return true;
-                case R.id.Toilet:
-                    mTextMessage.setText("Go to the toilet");
-                    return true;
+                case R.id.s1:
+                    for (Stand tempStand:stands
+                            ) {
+                        if(tempStand.getIdStand()==1){
+                            standGP = tempStand.getGridPoint();
+                            List<GridPoint> tempGrids = APIService.navigate(standGP , null);
+                            mTextMessage.setText("Navigating to Stand1");
+                            navPath.drawPath(tempGrids);
+                            navPath.postInvalidate();
+                            return true;
+                        }
+                    }
+                case R.id.s2:
+                    //Initialize StandGP
+                    for (Stand tempStand:stands
+                            ) {
+                        if(tempStand.getIdStand()==2){
+                            standGP = tempStand.getGridPoint();
+                            List<GridPoint> tempGrids = APIService.navigate(standGP , null);
+                            mTextMessage.setText("Navigating to Stand2");
+                            navPath.drawPath(tempGrids);
+                            navPath.postInvalidate();
+                            return true;
+                        }
+                    }
+                case R.id.s3:
+                    //Initialize StandGP
+                    for (Stand tempStand:stands
+                            ) {
+                        if(tempStand.getIdStand()==3){
+                            standGP = tempStand.getGridPoint();
+                            List<GridPoint> tempGrids = APIService.navigate(standGP , null);
+                            mTextMessage.setText("Navigating to Stand3");
+                            navPath.drawPath(tempGrids);
+                            navPath.postInvalidate();
+                            return true;
+                        }
+                    }
+                case R.id.s4:
+                    //Initialize StandGP
+                    for (Stand tempStand:stands
+                            ) {
+                        if(tempStand.getIdStand()==4){
+                            standGP = tempStand.getGridPoint();
+                            List<GridPoint> tempGrids = APIService.navigate(standGP , null);
+                            mTextMessage.setText("Navigating to Stand4");
+                            navPath.drawPath(tempGrids);
+                            navPath.postInvalidate();
+                            return true;
+                        }
+                    }
             }
             return false;
         }
@@ -61,9 +93,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        stands = APIService.getStands();
+
 
         mTextMessage = (TextView) findViewById(R.id.message);
         navPath = findViewById(R.id.navpath);
+
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 

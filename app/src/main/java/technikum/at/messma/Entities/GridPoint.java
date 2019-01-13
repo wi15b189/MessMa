@@ -4,18 +4,18 @@ import java.util.List;
 
 public class GridPoint {
     private String idGridPoint;
-    private String posX;
-    private String posY;
+    private int posX;
+    private int posY;
     private List<AccessPoint> accessPoints;
 
-    public GridPoint(String idGridPoint, String posX, String posY, List<AccessPoint> accessPoints) {
+    public GridPoint(String idGridPoint, int posX, int posY, List<AccessPoint> accessPoints) {
         this.idGridPoint = idGridPoint;
         this.posX = posX;
         this.posY = posY;
         this.accessPoints = accessPoints;
     }
 
-    public GridPoint(String idGridPoint, String posX, String posY) {
+    public GridPoint(String idGridPoint, int posX, int posY) {
         this.idGridPoint = idGridPoint;
         this.posX = posX;
         this.posY = posY;
@@ -29,19 +29,19 @@ public class GridPoint {
         this.idGridPoint = idGridPoint;
     }
 
-    public String getPosX() {
+    public int getPosX() {
         return posX;
     }
 
-    public void setPosX(String posX) {
+    public void setPosX(int posX) {
         this.posX = posX;
     }
 
-    public String getPosY() {
+    public int getPosY() {
         return posY;
     }
 
-    public void setPosY(String posY) {
+    public void setPosY(int posY) {
         this.posY = posY;
     }
 

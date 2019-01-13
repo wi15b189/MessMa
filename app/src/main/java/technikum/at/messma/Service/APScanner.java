@@ -23,17 +23,21 @@ public class APScanner {
     private ArrayList<AccessPoint> arrayList = new ArrayList<>();
     private List<ScanResult> temp;
     private ArrayAdapter wifi_adapter;
-    private BluetoothAdapter mBluetoothAdapter;
+    //private BluetoothAdapter mBluetoothAdapter;
     //set to identify the activity request
-    public static int REQUEST_BLUETOOTH = 1;
+    //public static int REQUEST_BLUETOOTH = 1;
     //accessing application context from a helper class by holding a reference to the activity's context and passing it on invocation to the helper
-    private static Context mContext;
+    private Context mContext;
+
+    public APScanner(Context con){
+        this.mContext = con;
+    }
 
 
     public List<AccessPoint> showResults(){
         arrayList.clear();
         scanWifi();
-        bluetoothScanning();
+        //bluetoothScanning();
         return arrayList;
     }
 
@@ -63,6 +67,7 @@ public class APScanner {
         //Toast.makeText(this, "Scanning WiFi ...", Toast.LENGTH_SHORT).show();
     }
 
+    /*
     private void bluetoothScanning(){
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
@@ -70,6 +75,7 @@ public class APScanner {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mBluetoothAdapter.startDiscovery();
     }
+
 
     // Create a BroadcastReceiver for ACTION_FOUND.
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -86,5 +92,6 @@ public class APScanner {
         }
 
     };
+    */
 
 }
