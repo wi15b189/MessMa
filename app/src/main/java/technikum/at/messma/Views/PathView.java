@@ -7,8 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.View;
-
-import java.util.LinkedList;
 import java.util.List;
 
 import technikum.at.messma.Entities.GridPoint;
@@ -76,8 +74,6 @@ public class PathView extends View{
 
         super.onDraw(canvas);
         canvas.drawPath(path, paint);
-        canvas.drawCircle(startX,startY, 15, red);
-        canvas.drawCircle(endX,endY, 15, red);
     }
 
 
