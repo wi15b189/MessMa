@@ -15,6 +15,12 @@ public class PathView extends View{
 
     Paint paint;
     Path path;
+    Paint red;
+
+    int startX;
+    int startY;
+    int endX;
+    int endY;
 
     public PathView(Context context) {
         super(context);
@@ -38,39 +44,37 @@ public class PathView extends View{
         paint.setStrokeWidth(6);
         paint.setStyle(Paint.Style.STROKE);
         path = new Path();
+
+        red = new Paint();
+        red.setColor(Color.RED);
+        red.setStrokeWidth(6);
+        red.setStyle(Paint.Style.FILL);
     }
 
     public void drawPath(List<GridPoint> gps) {
 
         if(gps.size() > 1) {
-            int x = gps.get(0).getPosX();
-            int y = gps.get(0).getPosY();
+            startX = gps.get(0).getPosX();
+            startY = gps.get(0).getPosY();
 
-            path.moveTo(x,y);
+            path.moveTo(startX,startY);
 
-            //drawCircle(x,y );
-            //path.addCircle(x,y,5, null);
             gps.remove(0);
 
             for (GridPoint gp : gps) {
                 path.lineTo(gp.getPosX(), gp.getPosY());
             }
-
-
+            endX = gps.get(gps.size()-1).getPosX();
+            endY = gps.get(gps.size()-1).getPosY();
         }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
+
         super.onDraw(canvas);
         canvas.drawPath(path, paint);
     }
 
-    public void drawStartPoint(GridPoint gridPoint) {
 
-    }
-
-    public void drawEndPoint(GridPoint gridPoint) {
-
-    }
 }
