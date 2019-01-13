@@ -11,6 +11,7 @@ public class NavigationAPIService {
 
     public List<AccessPoint> getAPs (){
         List<AccessPoint> temp = new LinkedList<>();
+        temp.add(new AccessPoint("AndroidWifi",50));
         return temp;
     }
 
@@ -53,8 +54,8 @@ public class NavigationAPIService {
                 "logopfad",
                 new GridPoint(
                         "a4",
-                        400,
-                        800,
+                        750,
+                        350,
                         null));
         temp.add(st1);
         temp.add(st2);

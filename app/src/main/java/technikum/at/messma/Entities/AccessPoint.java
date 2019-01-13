@@ -16,6 +16,11 @@ public class AccessPoint {
         this.signal = signal;
     }
 
+    public AccessPoint(String idMac, int signal) {
+        this.idMac = idMac;
+        this.signal = signal;
+    }
+
     public String getIdMac() {
         return idMac;
     }
