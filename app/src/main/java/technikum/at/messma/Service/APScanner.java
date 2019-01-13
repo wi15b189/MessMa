@@ -16,58 +16,56 @@ import java.util.ArrayList;
 import java.util.List;
 
 import technikum.at.messma.Entities.AccessPoint;
+import technikum.at.messma.MainActivity;
 
 
 public class APScanner {
 
+    WifiManager wifiManager;
+    Context con;
     private ArrayList<AccessPoint> arrayList = new ArrayList<>();
-    private List<ScanResult> temp;
-    private ArrayAdapter wifi_adapter;
-    //private BluetoothAdapter mBluetoothAdapter;
-    //set to identify the activity request
-    //public static int REQUEST_BLUETOOTH = 1;
-    //accessing application context from a helper class by holding a reference to the activity's context and passing it on invocation to the helper
-    private Context mContext;
-
-    public APScanner(Context con){
-        this.mContext = con;
-    }
-
-
-    public List<AccessPoint> showResults(){
-        arrayList.clear();
-        scanWifi();
-        //bluetoothScanning();
-        return arrayList;
-    }
-
-    //Casting a Context object to an Activity object
-    private WifiManager wifiManager = (WifiManager) ((Activity) mContext).getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+    private List<ScanResult> tmpScanResults;
 
     BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            temp = wifiManager.getScanResults();
+            tmpScanResults = wifiManager.getScanResults();
             //https://androidforums.com/threads/wifimanager-getscanresults-always-returns-empty-list.1266068/
             //need to enable permission to access localization service
-            for (ScanResult scanResult : temp) {
+            for (ScanResult scanResult : tmpScanResults) {
                 //if(filterAP(scanResult.BSSID)){
                 arrayList.add(new AccessPoint(scanResult.BSSID, 0, true, scanResult.SSID, scanResult.level));
                 //}
-                wifi_adapter.notifyDataSetChanged();
             }
-            ((Activity) mContext).unregisterReceiver(this);
+            con.unregisterReceiver(this);
         }
     };
 
+    public APScanner(WifiManager wifiManager, MainActivity mainActivity){
+        this.wifiManager = wifiManager;
+        con = mainActivity;
+    }
+
     private void scanWifi(){
-        //arrayList.clear();
-        ((Activity) mContext).registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        con.registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         wifiManager.startScan();
         //Toast.makeText(this, "Scanning WiFi ...", Toast.LENGTH_SHORT).show();
     }
 
+
+
+    public List<AccessPoint> getScanResults(){
+        arrayList.clear();
+        scanWifi();
+        return arrayList;
+    }
+
+
     /*
+
+    '''''''''''''''''''''''''''''''''''''''''''''''''
+    BLUETOOTH
+    _________________________________________________
     private void bluetoothScanning(){
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
