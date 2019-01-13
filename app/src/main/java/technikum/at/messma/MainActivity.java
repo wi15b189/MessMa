@@ -1,5 +1,6 @@
 package technikum.at.messma;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -43,11 +44,12 @@ public class MainActivity extends AppCompatActivity {
             //navPath.Clean();
             switch (item.getItemId()) {
                 case R.id.s1:
+                    //Initialize StandGP
                     for (Stand tempStand:stands
                             ) {
                         if(tempStand.getIdStand()==1){
                             standGP = tempStand.getGridPoint();
-                            List<GridPoint> tempGrids = APIService.navigate(standGP , getScanResults());
+                            List<GridPoint> tempGrids = APIService.navigate(standGP , scanner.getScanResults());
                             mTextMessage.setText("Navigating to Stand1");
                             mTextMessage.invalidate();
                             navPath.drawPath(tempGrids);
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                             ) {
                         if(tempStand.getIdStand()==2){
                             standGP = tempStand.getGridPoint();
-                            List<GridPoint> tempGrids = APIService.navigate(standGP , getScanResults());
+                            List<GridPoint> tempGrids = APIService.navigate(standGP , scanner.getScanResults());
                             mTextMessage.setText("Navigating to Stand2");
                             mTextMessage.invalidate();
                             navPath.drawPath(tempGrids);
@@ -75,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                             ) {
                         if(tempStand.getIdStand()==3){
                             standGP = tempStand.getGridPoint();
-                            List<GridPoint> tempGrids = APIService.navigate(standGP , getScanResults());
+                            List<GridPoint> tempGrids = APIService.navigate(standGP , scanner.getScanResults());
                             mTextMessage.setText("Navigating to Stand3");
                             mTextMessage.invalidate();
                             navPath.drawPath(tempGrids);
@@ -89,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                             ) {
                         if(tempStand.getIdStand()==4){
                             standGP = tempStand.getGridPoint();
-                            List<GridPoint> tempGrids = APIService.navigate(standGP , getScanResults());
+                            List<GridPoint> tempGrids = APIService.navigate(standGP , scanner.getScanResults());
                             mTextMessage.setText("Navigating to Stand4");
                             mTextMessage.invalidate();
                             navPath.drawPath(tempGrids);
@@ -106,48 +108,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        //init
         stands = APIService.getStands();
-        //scanner = new APScanner(wifiManager = (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE), this);
-        wifiManager = (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-
+        scanner = new APScanner(wifiManager = (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE), this);
         mTextMessage = (TextView) findViewById(R.id.message);
         navPath = findViewById(R.id.navpath);
-
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
     }
 
-    private ArrayList<AccessPoint> arrayList = new ArrayList<>();
-    private List<ScanResult> tmpScanResults;
-
-    BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            tmpScanResults = wifiManager.getScanResults();
-            //https://androidforums.com/threads/wifimanager-getscanresults-always-returns-empty-list.1266068/
-            //need to enable permission to access localization service
-            for (ScanResult scanResult : tmpScanResults) {
-                //if(filterAP(scanResult.BSSID)){
-                arrayList.add(new AccessPoint(scanResult.BSSID, 0, true, scanResult.SSID, scanResult.level));
-                //}
-            }
-            unregisterReceiver(this);
-        }
-    };
-
-    private void scanWifi(){
-        registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        wifiManager.startScan();
-        //Toast.makeText(this, "Scanning WiFi ...", Toast.LENGTH_SHORT).show();
-    }
-
-
-
-    public List<AccessPoint> getScanResults(){
-        arrayList.clear();
-        scanWifi();
-        return arrayList;
-    }
 }

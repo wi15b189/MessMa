@@ -7,8 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.View;
-
-import java.util.LinkedList;
 import java.util.List;
 
 import technikum.at.messma.Entities.GridPoint;
