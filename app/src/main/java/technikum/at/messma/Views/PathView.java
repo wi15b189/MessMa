@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -15,9 +16,10 @@ import technikum.at.messma.Entities.GridPoint;
 
 public class PathView extends View{
 
-    Paint paint;
-    Path path;
+    Paint blue;
     Paint red;
+    Paint green;
+    Path path;
 
     int startX;
     int startY;
@@ -41,16 +43,22 @@ public class PathView extends View{
     }
 
     private void init() {
-        paint = new Paint();
-        paint.setColor(Color.GREEN);
-        paint.setStrokeWidth(6);
-        paint.setStyle(Paint.Style.STROKE);
+        blue = new Paint();
+        blue.setColor(Color.BLUE);
+        blue.setStrokeWidth(6);
+        blue.setStyle(Paint.Style.STROKE);
+
         path = new Path();
 
         red = new Paint();
         red.setColor(Color.RED);
         red.setStrokeWidth(6);
         red.setStyle(Paint.Style.FILL);
+
+        green = new Paint();
+        green.setColor(Color.GREEN);
+        green.setStrokeWidth(6);
+        green.setStyle(Paint.Style.FILL);
     }
 
     public void drawPath(List<GridPoint> gps) {
@@ -73,11 +81,11 @@ public class PathView extends View{
 
     @Override
     protected void onDraw(Canvas canvas) {
-
         super.onDraw(canvas);
-        canvas.drawPath(path, paint);
+        canvas.drawPath(path, blue);
         canvas.drawCircle(startX,startY, 15, red);
-        canvas.drawCircle(endX,endY, 15, red);
+        canvas.drawCircle(endX,endY, 15, green);
+        path.reset();
     }
 
 

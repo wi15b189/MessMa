@@ -1,24 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
+
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
 
     <item
         android:id="@+id/s1"
-        android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/title_home" />
+        android:icon="@drawable/ic_atos"
+        android:title="ATOS" />
 
     <item
         android:id="@+id/s2"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_dashboard" />
+        android:icon="@drawable/ic_deloitte2"
+        android:title="DELOITTE" />
 
     <item
         android:id="@+id/s3"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/title_notifications" />
+        android:icon="@drawable/ic_ibm"
+        android:title="IBM" />
 
     <item
         android:id="@+id/s4"
-        android:icon="@drawable/stand_icon"
-        android:title="Toilet" />
+        android:icon="@drawable/ic_oebb"
+        android:title="ÖBB" />
 
+    <!--
+
+    <item
+         android:id="@+id/s5"
+         android:icon="@drawable/ic_wc_black_24dp"
+         android:title="TOILET" />
+
+     <item
+         android:id="@+id/s6"
+         android:icon="@drawable/ic_lift"
+         android:title="LIFT" />
+
+     <item
+         android:id="@+id/s7"
+         android:icon="@drawable/ic_reception"
+         android:title="RECEPTION" />
+
+         -->
 </menu>
