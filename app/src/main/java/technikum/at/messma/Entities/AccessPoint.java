@@ -21,6 +21,12 @@ public class AccessPoint {
         this.signal = signal;
     }
 
+    public AccessPoint(String BSSID, Integer type, boolean status){
+        this.type = type;
+        this.alive = status;
+        this.description = BSSID;
+    }
+
     public String getIdMac() {
         return idMac;
     }

@@ -1,13 +1,26 @@
 package technikum.at.messma.Service;
 
+import android.preference.PreferenceActivity;
+
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.LinkedList;
 import java.util.List;
 
+import cz.msebera.android.httpclient.Header;
 import technikum.at.messma.Entities.AccessPoint;
 import technikum.at.messma.Entities.GridPoint;
 import technikum.at.messma.Entities.Stand;
 
+
 public class NavigationAPIService {
+
+    APIService service = new APIService();
+
 
     public List<AccessPoint> getAPs (){
         List<AccessPoint> temp = new LinkedList<>();
@@ -20,7 +33,7 @@ public class NavigationAPIService {
         Stand st1 = new Stand(
                 1,
                 "Stand1",
-                "Wir suchen dich",
+                "Du komm her",
                 "logopfad",
                 new GridPoint(
                         "a1",
@@ -30,7 +43,7 @@ public class NavigationAPIService {
         Stand st2 = new Stand(
                 2,
                 "Stand2",
-                "Wir suchen dich",
+                "Her komm Du",
                 "logopfad",
                 new GridPoint(
                         "a2",
@@ -40,7 +53,7 @@ public class NavigationAPIService {
         Stand st3 = new Stand(
                 3,
                 "Stand3",
-                "Wir suchen dich",
+                "Kommst Du her?",
                 "logopfad",
                 new GridPoint(
                         "a3",
@@ -50,7 +63,7 @@ public class NavigationAPIService {
         Stand st4 = new Stand(
                 4,
                 "Stand4",
-                "Wir suchen dich",
+                "Komm jetzt! ",
                 "logopfad",
                 new GridPoint(
                         "a4",

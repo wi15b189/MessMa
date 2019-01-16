@@ -19,7 +19,7 @@ import java.util.List;
 import technikum.at.messma.Entities.AccessPoint;
 import technikum.at.messma.MainActivity;
 
-
+//THIS CLASS IS NEVER USED AT THE MOMENT SINCE WE DON'T KNOW WHAT HAPPENS WITH THE CONTEXT STUFF OF THE VIEW
 public class APScanner {
 
     WifiManager wifi;

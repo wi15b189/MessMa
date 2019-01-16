@@ -7,16 +7,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +22,7 @@ import java.util.List;
 import technikum.at.messma.Entities.AccessPoint;
 import technikum.at.messma.Entities.GridPoint;
 import technikum.at.messma.Entities.Stand;
-import technikum.at.messma.Service.APScanner;
+import technikum.at.messma.Service.APIService;
 import technikum.at.messma.Service.NavigationAPIService;
 import technikum.at.messma.Views.PathView;
 
@@ -40,10 +35,12 @@ public class MainActivity extends Activity {
 
     private TextView mTextMessage;
     private PathView navPath;
-    private NavigationAPIService APIService = new NavigationAPIService();
+
     private List<Stand> stands;
     private List<AccessPoint> knownAccessPoints;
-    private APScanner scanner;
+    private List<GridPoint> tmpGridPoints;
+
+    private NavigationAPIService APIService = new NavigationAPIService();
 
 
 
@@ -52,8 +49,11 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //init
+        stands = new ArrayList<>();
+        //new getStandData().execute();
         stands = APIService.getStands();
-        knownAccessPoints = APIService.getAPs();
+        knownAccessPoints = new ArrayList<>();
+        new getAPData().execute();
         //scanner = new APScanner(wifiManager = (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE), this);
 
         mTextMessage = (TextView) findViewById(R.id.message);
@@ -90,7 +90,7 @@ public class MainActivity extends Activity {
                 case R.id.s1:
                     for (Stand tempStand:stands
                             ) {
-                        if(tempStand.getIdStand()==1){
+                        if(tempStand.getIdStand()== 1){
                             standGP = tempStand.getGridPoint();
                             accessPoints.clear();
                             wifi.startScan();
@@ -101,20 +101,22 @@ public class MainActivity extends Activity {
                                 while (size >= 0)
                                 {
                                     AccessPoint ap = new AccessPoint(results.get(size).SSID, results.get(size).level);
+                                    accessPoints.add(ap);
                                     //FILTERN
-                                    for (AccessPoint tmpAp:knownAccessPoints) {
-                                        if(ap.getIdMac().equalsIgnoreCase(tmpAp.getIdMac())){
-                                            accessPoints.add(ap);
-                                        }
-                                    }
+                                    //for (AccessPoint tmpAp:knownAccessPoints) {
+                                    //    if(ap.getIdMac().equalsIgnoreCase(tmpAp.getIdMac())){
+                                    //        accessPoints.add(ap);
+                                    //    }
+                                    //}
                                     size--;
                                 }
                             }
                             catch (Exception e)
                             { }
                             List<GridPoint> tempGrids = APIService.navigate(standGP , accessPoints);
-                            mTextMessage.setText("Navigating to Stand2");
+                            mTextMessage.setText(tempStand.getDescription());
                             mTextMessage.invalidate();
+                            //new putNavData(standGP, accessPoints).execute();
                             navPath.drawPath(tempGrids);
                             navPath.postInvalidate();
                             return true;
@@ -221,4 +223,52 @@ public class MainActivity extends Activity {
             return false;
         }
     };
+
+
+    private class getAPData extends AsyncTask<Void, Void, List<AccessPoint>> {
+
+        @Override
+        protected List<AccessPoint> doInBackground(Void... voids) {
+            APIService api = new APIService();
+            knownAccessPoints = api.getAccessPoints();
+            return api.getAccessPoints();
+        }
+
+        protected void onPostExecute(List<AccessPoint> result) {
+            super.onPostExecute(result);
+        }
+    }
+
+    private class getStandData extends AsyncTask<Void, Void, List<Stand>> {
+
+        @Override
+        protected List<Stand> doInBackground(Void... voids) {
+            APIService api = new APIService();
+            stands = api.getStands();
+            return api.getStands();
+        }
+
+        protected void onPostExecute(List<Stand> result) {
+            super.onPostExecute(result);
+        }
+    }
+
+    private class putNavData extends AsyncTask<Void, Void, List<GridPoint>>{
+        GridPoint standGP;
+        List<AccessPoint> accessPoints;
+
+        public putNavData(GridPoint standGP, List<AccessPoint> accessPoints) {
+            this.standGP = standGP;
+            this.accessPoints = accessPoints;
+        }
+
+        @Override
+        protected List<GridPoint> doInBackground(Void... voids) {
+            APIService api = new APIService();
+            tmpGridPoints = api.putNavData(standGP, accessPoints);
+            return api.putNavData(standGP, accessPoints);
+        }
+    }
 }
+
+
