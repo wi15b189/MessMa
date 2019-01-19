@@ -1,6 +1,6 @@
 package technikum.at.messma.Service;
 
-
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -17,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,20 +25,20 @@ import technikum.at.messma.Entities.AccessPoint;
 import technikum.at.messma.Entities.GridPoint;
 import technikum.at.messma.Entities.Stand;
 
-public class APIService  {
+public class APIService {
     private AccessPoint tempAP;
     private List<AccessPoint> tempAPList;
     private Stand tempStand;
     private List<Stand> tempStandList;
     private static final String TAG = APIService.class.getSimpleName();
 
-    public List<AccessPoint> getAccessPoints(){
-        tempAPList = new LinkedList<AccessPoint>();
-        String URL = "http://192.168.0.233:9000/api/getAllAccessPoints";
+    public List<AccessPoint> getAccessPoints() {
+        tempAPList = new LinkedList<>();
+        String URL = "http://192.168.0.241:9000/api/getAllAccessPoints";
         String jsonStr = makeServiceCall(URL);
 
-        if (jsonStr!=null){
-            try{
+        if (jsonStr != null) {
+            try {
                 JSONObject jsonObj = new JSONObject(jsonStr);
                 // Getting JSON Array node
                 JSONArray data = jsonObj.getJSONArray("data");
@@ -47,27 +48,24 @@ public class APIService  {
                     String mac = d.getString("mac");
                     Integer type = d.getInt("type");
                     Boolean activity = d.getBoolean("activity");
-                    tempAP = new AccessPoint(mac,type,activity);
+                    tempAP = new AccessPoint(mac, type, activity);
                     tempAPList.add(tempAP);
                 }
             } catch (final JSONException e) {
                 Log.e(TAG, "Json parsing error: " + e.getMessage());
             }
         }
-        if (tempAPList != null){
-            return tempAPList;
-        }else {
-            return null;
-        }
+        return tempAPList;
     }
 
-    public List<Stand> getStands(){
-        tempStandList = new LinkedList<Stand>();
-        String URL = "http://192.168.0.233:9000/api/getAllStands";
+    public List<Stand> getStands() {
+        tempStandList = new LinkedList<>();
+        GridPoint tmpGP;
+        String URL = "http://192.168.0.241:9000/api/getAllStands";
         String jsonStr = makeServiceCall(URL);
 
-        if (jsonStr!=null){
-            try{
+        if (jsonStr != null) {
+            try {
                 JSONObject jsonObj = new JSONObject(jsonStr);
                 // Getting JSON Array node
                 JSONArray data = jsonObj.getJSONArray("data");
@@ -78,28 +76,19 @@ public class APIService  {
                     String name = d.getString("name");
                     String description = d.getString("description");
                     String logo = d.getString("logo");
-                    JSONArray gridPointData = jsonObj.getJSONArray("GridPoint");
-                    GridPoint tmpGP = null;
-                    for (int j = 0; j < gridPointData.length(); j++) {
-                        JSONObject g = gridPointData.getJSONObject(j);
-                        String idGP = g.getString("id");
-                        int posx = g.getInt("posx");
-                        int posy = g.getInt("posy");
-                        tmpGP = new GridPoint(idGP, posx, posy);
-                    }
-                    tempStand = new Stand(id, name,description,logo,tmpGP);
-
+                    JSONObject gridPointData = d.getJSONObject("GridPoint");
+                    String idGP = gridPointData.getString("id");
+                    int posx = gridPointData.getInt("posX");
+                    int posy = gridPointData.getInt("posY");
+                    tmpGP = new GridPoint(idGP, posx, posy);
+                    tempStand = new Stand(id, name, description, logo, tmpGP);
                     tempStandList.add(tempStand);
                 }
             } catch (final JSONException e) {
                 Log.e(TAG, "Json parsing error: " + e.getMessage());
             }
         }
-        if (tempStandList != null){
-            return tempStandList;
-        }else {
-            return null;
-        }
+        return tempStandList;
     }
 
     private String makeServiceCall(String reqUrl) {
@@ -146,63 +135,82 @@ public class APIService  {
     }
 
     public List<GridPoint> putNavData(GridPoint standGP, List<AccessPoint> accessPoints) {
-        //Build Send string for JSON
-        JSONObject postData = new JSONObject();
-        try{
-            postData.put("destination", standGP.getIdGridPoint());
-            JSONArray arr = generateJSONArray(accessPoints);
-            postData.put("ReceivedSignals", arr);
-            String JSONString = postData.toString();
-
-
-        String data = "";
-        String URL = "http://192.168.0.233:9000/api/getPosition";
-        try{
+        String URL = "http://192.168.0.241:9000/api/getPosition";
+        String response = null;
+        try {
+            //setup connection
             URL url = new URL(URL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestMethod("POST");
-            conn.setDoOutput(true);
             conn.connect();
-
-            String JSONstring = "{\"destination\": \"1\", \"ReceivedSignals\":[" +
-                    "{\"mac\": \"84:78:ac:b8:bb:b0\",\"power\": \"81\"" +
-                    "},{\"mac\": \"84:78:ac:b8:d4:80\",\"power\": \"83\"}," +
-                    "{\"mac\": \"84:78:ac:b8:e2:f0\",\"power\": \"20\"" + "}]}";
-
+            // send data
             DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-            wr.writeBytes("Data=" + JSONstring);
+            wr.writeBytes(ObjectToJsonString(standGP, accessPoints));
             wr.flush();
             wr.close();
-
+            //read data
             InputStream in = new BufferedInputStream(conn.getInputStream());
-            data = convertStreamToString(in);
+            response = convertStreamToString(in);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "MalformedURLException: " + e.getMessage());
         } catch (ProtocolException e) {
-            e.printStackTrace();
+            Log.e(TAG, "ProtocolException: " + e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "IOException: " + e.getMessage());
+        } catch (Exception e) {
+            Log.e(TAG, "Exception: " + e.getMessage());
         }
-
-        return null;
-    } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return responseStringToObject(response, standGP);
     }
 
-    private JSONArray generateJSONArray(List<AccessPoint> ListAP) {
+    @NonNull
+    private String ObjectToJsonString(GridPoint standGP, List<AccessPoint> accessPoints) {
+        //TODO JSON String aus standgp und APs erstellen
+        JSONObject destination = new JSONObject();
         JSONArray temp = new JSONArray();
-        try{
-            for (AccessPoint AP : ListAP){
+        try {
+            destination.put("Destination", standGP.getIdGridPoint());
+            for (AccessPoint AP : accessPoints) {
                 JSONObject postData = new JSONObject();
                 postData.put("mac", AP.getIdMac());
-                postData.put("power", AP.getSignal());
+                postData.put("power", String.valueOf(AP.getSignal()));
                 temp.put(postData);
             }
+            destination.put("ReceivedSignals", temp);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        return destination.toString();
+    }
+
+    @NonNull
+    private List<GridPoint> responseStringToObject(String response, GridPoint standGP) {
+        //TODO Response formatieren und zurück geben
+        List<GridPoint> tmpGP = new ArrayList<>();
+        if(response!=null) {
+            try {
+                JSONObject jsonObj = new JSONObject(response);
+                // Getting JSON Array node
+                JSONArray data = jsonObj.getJSONArray("data");
+                for (int i = 0; i < data.length(); i++) {
+                    JSONObject d = data.getJSONObject(i);
+                    String idGP = d.getString("id");
+                    int posx = d.getInt("posX");
+                    int posy = d.getInt("posY");
+                    tmpGP.add(new GridPoint(idGP, posx, posy));
+                }
+            } catch (final JSONException e) {
+                Log.e(TAG, "Json parsing error: " + e.getMessage());
+            }
+        }
+        //return tmpGP;
+        List<GridPoint> temp = new LinkedList<GridPoint>();
+        temp.add(new GridPoint("1", 800, 100));
+        temp.add(new GridPoint("2", 800, 200));
+        temp.add(new GridPoint("3", 800, 300));
+        temp.add(standGP);
         return temp;
     }
 }

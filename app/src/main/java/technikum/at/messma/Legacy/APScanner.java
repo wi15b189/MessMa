@@ -1,4 +1,4 @@
-package technikum.at.messma.Service;
+package technikum.at.messma.Legacy;
 
 
 import android.app.Activity;

@@ -1,4 +1,4 @@
-package technikum.at.messma.Service;
+package technikum.at.messma.Legacy;
 
 import android.preference.PreferenceActivity;
 
@@ -15,6 +15,7 @@ import cz.msebera.android.httpclient.Header;
 import technikum.at.messma.Entities.AccessPoint;
 import technikum.at.messma.Entities.GridPoint;
 import technikum.at.messma.Entities.Stand;
+import technikum.at.messma.Service.APIService;
 
 
 public class NavigationAPIService {
