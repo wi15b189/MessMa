@@ -115,14 +115,14 @@ public class MainActivity extends Activity {
         //Toast.makeText(this, "Scanning...." + size, Toast.LENGTH_SHORT).show();
         size = size - 1;
         while (size >= 0) {
-            AccessPoint ap = new AccessPoint(results.get(size).SSID, results.get(size).level);
-            accessPoints.add(ap); //nur einschalten wenn filtern aus ist
+            AccessPoint ap = new AccessPoint(results.get(size).BSSID, results.get(size).level);
+            //accessPoints.add(ap); //nur einschalten wenn filtern aus ist
             //FILTERN
-            //for (AccessPoint tmpAp : knownAccessPoints) {
-            //    if (ap.getIdMac().equalsIgnoreCase(tmpAp.getIdMac())) {
-            //        accessPoints.add(ap);
-            //    }
-            //}
+            for (AccessPoint tmpAp : knownAccessPoints) {
+                if (tmpAp.getIdMac().equals(ap.getIdMac())) {
+                    accessPoints.add(ap);
+                }
+            }
             size--;
         }
     }

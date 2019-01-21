@@ -34,7 +34,8 @@ public class APIService {
 
     public List<AccessPoint> getAccessPoints() {
         tempAPList = new LinkedList<>();
-        String URL = "http://192.168.0.241:9000/api/getAllAccessPoints";
+        //String URL = "http://192.168.0.241:9000/api/getAllAccessPoints";
+        String URL = "http://10.202.233.106:9000/api/getAllAccessPoints";
         String jsonStr = makeServiceCall(URL);
 
         if (jsonStr != null) {
@@ -61,7 +62,8 @@ public class APIService {
     public List<Stand> getStands() {
         tempStandList = new LinkedList<>();
         GridPoint tmpGP;
-        String URL = "http://192.168.0.241:9000/api/getAllStands";
+        //String URL = "http://192.168.0.241:9000/api/getAllStands";
+        String URL = "http://10.202.233.106:9000/api/getAllStands";
         String jsonStr = makeServiceCall(URL);
 
         if (jsonStr != null) {
@@ -76,7 +78,7 @@ public class APIService {
                     String name = d.getString("name");
                     String description = d.getString("description");
                     String logo = d.getString("logo");
-                    JSONObject gridPointData = d.getJSONObject("GridPoint");
+                    JSONObject gridPointData = d.getJSONObject("gridPoint");
                     String idGP = gridPointData.getString("id");
                     int posx = gridPointData.getInt("posX");
                     int posy = gridPointData.getInt("posY");
@@ -135,7 +137,8 @@ public class APIService {
     }
 
     public List<GridPoint> putNavData(GridPoint standGP, List<AccessPoint> accessPoints) {
-        String URL = "http://192.168.0.241:9000/api/getPosition";
+        // String URL = "http://192.168.0.241:9000/api/getPosition";
+        String URL = "http://10.202.233.106:9000/api/getPosition";
         String response = null;
         try {
             //setup connection
@@ -170,7 +173,7 @@ public class APIService {
         JSONObject destination = new JSONObject();
         JSONArray temp = new JSONArray();
         try {
-            destination.put("Destination", standGP.getIdGridPoint());
+            destination.put("destination", standGP.getIdGridPoint());
             for (AccessPoint AP : accessPoints) {
                 JSONObject postData = new JSONObject();
                 postData.put("mac", AP.getIdMac());
@@ -189,7 +192,7 @@ public class APIService {
     private List<GridPoint> responseStringToObject(String response, GridPoint standGP) {
         //TODO Response formatieren und zurück geben
         List<GridPoint> tmpGP = new ArrayList<>();
-        if(response!=null) {
+        if (response != null) {
             try {
                 JSONObject jsonObj = new JSONObject(response);
                 // Getting JSON Array node
@@ -197,20 +200,21 @@ public class APIService {
                 for (int i = 0; i < data.length(); i++) {
                     JSONObject d = data.getJSONObject(i);
                     String idGP = d.getString("id");
-                    int posx = d.getInt("posX");
-                    int posy = d.getInt("posY");
+                    int posx = (int) (d.getInt("posY") * 1.35);
+                    int posy = (int) (d.getInt("posX") * 1.35);
                     tmpGP.add(new GridPoint(idGP, posx, posy));
                 }
             } catch (final JSONException e) {
                 Log.e(TAG, "Json parsing error: " + e.getMessage());
             }
         }
-        //return tmpGP;
+        return tmpGP;
+        /*
         List<GridPoint> temp = new LinkedList<GridPoint>();
-        temp.add(new GridPoint("1", 800, 100));
-        temp.add(new GridPoint("2", 800, 200));
-        temp.add(new GridPoint("3", 800, 300));
+        temp.add(new GridPoint("1", 800, 80));
+        temp.add(new GridPoint("2", 850, 200));
+        temp.add(new GridPoint("3", 850, 300));
         temp.add(standGP);
-        return temp;
+        return temp;*/
     }
 }

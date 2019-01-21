@@ -24,7 +24,7 @@ public class AccessPoint {
     public AccessPoint(String BSSID, Integer type, boolean status){
         this.type = type;
         this.alive = status;
-        this.description = BSSID;
+        this.idMac = BSSID;
     }
 
     public String getIdMac() {
