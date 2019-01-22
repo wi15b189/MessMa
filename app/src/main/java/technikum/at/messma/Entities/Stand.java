@@ -1,5 +1,7 @@
 package technikum.at.messma.Entities;
 
+import technikum.at.messma.R;
+
 public class Stand {
     private int idStand;
     private String name;
@@ -53,5 +55,37 @@ public class Stand {
 
     public void setGridPoint(GridPoint gridPoint) {
         this.gridPoint = gridPoint;
+    }
+
+    public int getLogoAsInt() {
+        try {
+            return Integer.parseInt(this.logo);
+        } catch (Exception e) {
+            return R.drawable.ic_wc_black_24dp;
+        }
+
+    }
+
+    public int getBackgroundSource() {
+        switch (idStand) {
+            case 1:
+                return R.drawable.ic_atos;
+            case 2:
+                return R.drawable.ic_bwin;
+            case 3:
+                return R.drawable.ic_ibm;
+            case 4:
+                return R.drawable.ic_oebb;
+            case 5:
+                return R.drawable.ic_tmobile_2;
+            case 6:
+                return R.drawable.ic_deloitte_2;
+            case 7:
+                return R.drawable.ic_lift;
+            case 8:
+                return R.drawable.ic_reception;
+            default:
+                return R.drawable.ic_wc_black_24dp;
+        }
     }
 }

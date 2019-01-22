@@ -26,6 +26,13 @@ import technikum.at.messma.Entities.GridPoint;
 import technikum.at.messma.Entities.Stand;
 
 public class APIService {
+    //Laci
+    // String baseURL = "http://192.168.0.241:9000/api/";
+    //Home
+    String baseURL = "http://192.168.0.186:9000/api/";
+    //FH
+    //String baseURL = "http://10.202.233.106:9000/api/";
+
     private AccessPoint tempAP;
     private List<AccessPoint> tempAPList;
     private Stand tempStand;
@@ -34,8 +41,7 @@ public class APIService {
 
     public List<AccessPoint> getAccessPoints() {
         tempAPList = new LinkedList<>();
-        //String URL = "http://192.168.0.241:9000/api/getAllAccessPoints";
-        String URL = "http://10.202.233.106:9000/api/getAllAccessPoints";
+        String URL = baseURL + "getAllAccessPoints";
         String jsonStr = makeServiceCall(URL);
 
         if (jsonStr != null) {
@@ -62,8 +68,7 @@ public class APIService {
     public List<Stand> getStands() {
         tempStandList = new LinkedList<>();
         GridPoint tmpGP;
-        //String URL = "http://192.168.0.241:9000/api/getAllStands";
-        String URL = "http://10.202.233.106:9000/api/getAllStands";
+        String URL = baseURL + "getAllStands";
         String jsonStr = makeServiceCall(URL);
 
         if (jsonStr != null) {
@@ -91,6 +96,36 @@ public class APIService {
             }
         }
         return tempStandList;
+    }
+
+    public List<GridPoint> putNavData(GridPoint standGP, List<AccessPoint> accessPoints) {
+        String URL = baseURL + "getPosition";
+        String response = null;
+        try {
+            //setup connection
+            URL url = new URL(URL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestMethod("POST");
+            conn.connect();
+            // send data
+            DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+            wr.writeBytes(ObjectToJsonString(standGP, accessPoints));
+            wr.flush();
+            wr.close();
+            //read data
+            InputStream in = new BufferedInputStream(conn.getInputStream());
+            response = convertStreamToString(in);
+        } catch (MalformedURLException e) {
+            Log.e(TAG, "MalformedURLException: " + e.getMessage());
+        } catch (ProtocolException e) {
+            Log.e(TAG, "ProtocolException: " + e.getMessage());
+        } catch (IOException e) {
+            Log.e(TAG, "IOException: " + e.getMessage());
+        } catch (Exception e) {
+            Log.e(TAG, "Exception: " + e.getMessage());
+        }
+        return responseStringToObject(response, standGP);
     }
 
     private String makeServiceCall(String reqUrl) {
@@ -134,37 +169,6 @@ public class APIService {
             }
         }
         return sb.toString();
-    }
-
-    public List<GridPoint> putNavData(GridPoint standGP, List<AccessPoint> accessPoints) {
-        // String URL = "http://192.168.0.241:9000/api/getPosition";
-        String URL = "http://10.202.233.106:9000/api/getPosition";
-        String response = null;
-        try {
-            //setup connection
-            URL url = new URL(URL);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestMethod("POST");
-            conn.connect();
-            // send data
-            DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-            wr.writeBytes(ObjectToJsonString(standGP, accessPoints));
-            wr.flush();
-            wr.close();
-            //read data
-            InputStream in = new BufferedInputStream(conn.getInputStream());
-            response = convertStreamToString(in);
-        } catch (MalformedURLException e) {
-            Log.e(TAG, "MalformedURLException: " + e.getMessage());
-        } catch (ProtocolException e) {
-            Log.e(TAG, "ProtocolException: " + e.getMessage());
-        } catch (IOException e) {
-            Log.e(TAG, "IOException: " + e.getMessage());
-        } catch (Exception e) {
-            Log.e(TAG, "Exception: " + e.getMessage());
-        }
-        return responseStringToObject(response, standGP);
     }
 
     @NonNull

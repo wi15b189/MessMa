@@ -12,7 +12,7 @@
 
     <item
         android:id="@+id/s2"
-        android:icon="@drawable/ic_deloitte2"
+        android:icon="@drawable/ic_deloitte_2"
         android:title="DELOITTE" />
 
     <item

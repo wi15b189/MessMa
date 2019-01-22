@@ -12,9 +12,14 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +55,11 @@ public class MainActivity extends Activity {
     private Navigate nav;
     private Runnable action;
 
+    //declare button stuff
+    private LinearLayout linearLayout;
+    private HorizontalScrollView horizontalScrollView;
+    private View.OnClickListener buttonClick;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,9 +93,26 @@ public class MainActivity extends Activity {
         }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 
         //init buttons
+        generateHorizontalView();
+        Log.d("Info","generated Horizontal view");
+        buttonClick = generateButtonListener();
+        Log.d("Info","generated listener");
+
+        //generateButtons();
+        Log.d("Info","generated buttons");
+
+
+        LinearLayout horizontalLayout = findViewById(R.id.rootContainer);
+        Log.d("Info","horizontal layout saved");
+
+        if(horizontalLayout != null){
+            horizontalLayout.addView(horizontalScrollView);
+            Log.d("Info","added");
+        }
+
         /*
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);*/
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         final Button button1 = findViewById(R.id.button_1);
         button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -105,8 +132,54 @@ public class MainActivity extends Activity {
                     nav.execute();
                 }
             }
-        });
+        });*/
     }
+
+    private void generateHorizontalView() {
+        horizontalScrollView = new HorizontalScrollView(this);
+        LinearLayout.LayoutParams layoutParams= new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        horizontalScrollView.setLayoutParams(layoutParams);
+        linearLayout = new LinearLayout(this);
+
+        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayout.setLayoutParams(linearParams);
+
+        horizontalScrollView.addView(linearLayout);
+    }
+
+    private void generateButtons() {
+        for (Stand stand:stands) {
+            Button tmpButton = new Button(this);
+            tmpButton.setLayoutParams(getMyLayoutParams());
+            tmpButton.setId(stand.getIdStand());
+            tmpButton.setOnClickListener(buttonClick);
+            tmpButton.setBackgroundResource(stand.getBackgroundSource());
+            linearLayout.addView(tmpButton);
+        }
+    }
+
+    private View.OnClickListener generateButtonListener() {
+        buttonClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                wifi.startScan();
+                if (accessPoints != null) {
+                    nav = new Navigate(v.getId());
+                    nav.execute();
+                }
+            }
+        };
+        return buttonClick;
+    }
+
+    private ViewGroup.LayoutParams getMyLayoutParams() {
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        param.setMargins(30,20,30,0);
+        param.gravity = Gravity.CENTER;
+        return param;
+    }
+
 
     private void scanWifi() {
         results = wifi.getScanResults();
@@ -127,7 +200,7 @@ public class MainActivity extends Activity {
         }
     }
 
-
+/*
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -148,7 +221,7 @@ public class MainActivity extends Activity {
             return false;
         }
     };
-
+*/
 
     private class getAPData extends AsyncTask<Void, Void, List<AccessPoint>> {
 
@@ -172,6 +245,7 @@ public class MainActivity extends Activity {
         }
 
         protected void onPostExecute(List<Stand> result) {
+            generateButtons();
             super.onPostExecute(result);
         }
     }
