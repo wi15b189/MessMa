@@ -84,6 +84,8 @@ public class PathView extends View {
             endX = gps.get(gps.size() - 1).getPosX();
             endY = gps.get(gps.size() - 1).getPosY();
         }else {
+            startX = 2000;
+            startY = 2000;
             endX = gps.get(0).getPosX();
             endY = gps.get(0).getPosY();
         }
