@@ -1,17 +1,9 @@
 package technikum.at.messma.Legacy;
 
-import android.preference.PreferenceActivity;
-
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.LinkedList;
 import java.util.List;
 
-import cz.msebera.android.httpclient.Header;
+
 import technikum.at.messma.Entities.AccessPoint;
 import technikum.at.messma.Entities.GridPoint;
 import technikum.at.messma.Entities.Stand;

@@ -21,7 +21,7 @@
     <ImageView
         android:layout_width="640dp"
         android:layout_height="240dp"
-        android:src="@drawable/plainplan"
+        android:src="@drawable/plan_new"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <technikum.at.messma.Views.PathView
