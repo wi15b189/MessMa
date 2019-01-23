@@ -27,11 +27,11 @@ import technikum.at.messma.Entities.Stand;
 
 public class APIService {
     //Laci
-    // String baseURL = "http://192.168.0.241:9000/api/";
+     String baseURL = "http://192.168.0.241:9000/api/";
     //Home
     //String baseURL = "http://192.168.0.186:9000/api/";
     //FH
-    String baseURL = "http://10.202.233.106:9000/api/";
+    //String baseURL = "http://10.202.233.106:9000/api/";
 
     private AccessPoint tempAP;
     private List<AccessPoint> tempAPList;
