@@ -97,15 +97,15 @@ public class MainActivity extends Activity {
         buttonClick = generateButtonListener();
         LinearLayout horizontalLayout = findViewById(R.id.rootContainer);
 
-        if(horizontalLayout != null){
+        if (horizontalLayout != null) {
             horizontalLayout.addView(horizontalScrollView);
-            Log.d("Info","added");
+            Log.d("Info", "added");
         }
     }
 
     private void generateHorizontalView() {
         horizontalScrollView = new HorizontalScrollView(this);
-        LinearLayout.LayoutParams layoutParams= new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         horizontalScrollView.setLayoutParams(layoutParams);
         linearLayout = new LinearLayout(this);
 
@@ -117,7 +117,7 @@ public class MainActivity extends Activity {
     }
 
     private void generateButtons() {
-        for (Stand stand:stands) {
+        for (Stand stand : stands) {
             Button tmpButton = new Button(this);
             tmpButton.setLayoutParams(getMyLayoutParams());
             tmpButton.setId(stand.getIdStand());
@@ -148,7 +148,7 @@ public class MainActivity extends Activity {
 
     private ViewGroup.LayoutParams getMyLayoutParams() {
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        param.setMargins(30,20,30,0);
+        param.setMargins(30, 20, 30, 0);
         param.gravity = Gravity.CENTER;
         return param;
     }
@@ -219,8 +219,13 @@ public class MainActivity extends Activity {
                         @Override
                         public void run() {
                             // Stuff that updates the UI
-                            mTextMessage.setText("Navigation nach "+tempStand.getName()+" gestartet. - "+tempStand.getDescription());
-                            mTextMessage.invalidate();
+                            if (tmpGridPoints.size() > 1) {
+                                mTextMessage.setText("Navigation nach " + tempStand.getName() + " gestartet. - " + tempStand.getDescription());
+                                mTextMessage.invalidate();
+                            } else {
+                                mTextMessage.setText("Standort konnte nicht ermittelt werden. Stand " + tempStand.getName() + " wird angezeigt.");
+                                mTextMessage.invalidate();
+                            }
                             //wifi.startScan();
                         }
                     });
