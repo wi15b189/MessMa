@@ -94,45 +94,13 @@ public class MainActivity extends Activity {
 
         //init buttons
         generateHorizontalView();
-        Log.d("Info","generated Horizontal view");
         buttonClick = generateButtonListener();
-        Log.d("Info","generated listener");
-
-        //generateButtons();
-        Log.d("Info","generated buttons");
-
-
         LinearLayout horizontalLayout = findViewById(R.id.rootContainer);
-        Log.d("Info","horizontal layout saved");
 
         if(horizontalLayout != null){
             horizontalLayout.addView(horizontalScrollView);
             Log.d("Info","added");
         }
-
-        /*
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        final Button button1 = findViewById(R.id.button_1);
-        button1.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                wifi.startScan();
-                if (accessPoints != null) {
-                    nav = new Navigate(1);
-                    nav.execute();
-                }
-            }
-        });
-        final Button button2 = findViewById(R.id.button_2);
-        button2.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                wifi.startScan();
-                if (accessPoints != null) {
-                    nav = new Navigate(2);
-                    nav.execute();
-                }
-            }
-        });*/
     }
 
     private void generateHorizontalView() {
@@ -164,6 +132,11 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 wifi.startScan();
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 if (accessPoints != null) {
                     nav = new Navigate(v.getId());
                     nav.execute();
@@ -199,29 +172,6 @@ public class MainActivity extends Activity {
             size--;
         }
     }
-
-/*
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.s1:
-                    new Navigate(1).execute();
-                    return true;
-                case R.id.s2:
-                    new Navigate(2).execute();
-                case R.id.s3:
-                    new Navigate(3).execute();
-                    return true;
-                case R.id.s4:
-                    new Navigate(4).execute();
-                    return true;
-            }
-            return false;
-        }
-    };
-*/
 
     private class getAPData extends AsyncTask<Void, Void, List<AccessPoint>> {
 
@@ -269,9 +219,9 @@ public class MainActivity extends Activity {
                         @Override
                         public void run() {
                             // Stuff that updates the UI
-                            mTextMessage.setText(tempStand.getDescription());
+                            mTextMessage.setText("Navigation nach "+tempStand.getName()+" gestartet. - "+tempStand.getDescription());
                             mTextMessage.invalidate();
-                            wifi.startScan();
+                            //wifi.startScan();
                         }
                     });
                     standGP = tempStand.getGridPoint();
