@@ -200,7 +200,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    private class Navigate extends AsyncTask<Void, Integer, Void> {
+    private class Navigate extends AsyncTask<Void, Integer, Stand> {
         int standid;
 
         public Navigate(int standid) {
@@ -208,27 +208,14 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Stand doInBackground(Void... voids) {
             //Toast.makeText(getApplicationContext(), "Setup Navigation...", Toast.LENGTH_SHORT).show();
 
             GridPoint standGP = null;
             for (final Stand tempStand : stands
             ) {
                 if (tempStand.getIdStand() == standid) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            // Stuff that updates the UI
-                            if (tmpGridPoints.size() > 1) {
-                                mTextMessage.setText("Navigation nach " + tempStand.getName() + " gestartet. - " + tempStand.getDescription());
-                                mTextMessage.invalidate();
-                            } else {
-                                mTextMessage.setText("Standort konnte nicht ermittelt werden. Stand " + tempStand.getName() + " wird angezeigt.");
-                                mTextMessage.invalidate();
-                            }
-                            //wifi.startScan();
-                        }
-                    });
+                    //run in UI war mal hier
                     standGP = tempStand.getGridPoint();
                     //tmpGridPoints.clear();
                     //Toast.makeText(getApplicationContext(), "Navigating...", Toast.LENGTH_SHORT).show();
@@ -238,11 +225,28 @@ public class MainActivity extends Activity {
                         navPath.drawPath(tmpGridPoints);
                         navPath.postInvalidate();
                     }
-                    return null;
+                    return tempStand;
                 }
             }
             return null;
+        }
 
+        @Override
+        protected void onPostExecute(final Stand tmpStand) {
+            super.onPostExecute(tmpStand);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    // Stuff that updates the UI
+                    if (tmpGridPoints!= null && tmpGridPoints.size() > 1) {
+                        mTextMessage.setText("Navigation nach " + tmpStand.getName() + " gestartet. - " + tmpStand.getDescription());
+                        mTextMessage.invalidate();
+                    } else {
+                        mTextMessage.setText("Standort konnte nicht ermittelt werden. Stand " + tmpStand.getName() + " wird angezeigt.");
+                        mTextMessage.invalidate();
+                    }
+                }
+            });
         }
 
         protected void onProgressUpdate(Integer... progress) {
