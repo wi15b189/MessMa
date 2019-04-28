@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:layout_width="679dp"
+        android:layout_width="match_parent"
         android:layout_height="250dp"
         android:src="@drawable/plan_new"
         app:layout_constraintTop_toTopOf="parent" />
