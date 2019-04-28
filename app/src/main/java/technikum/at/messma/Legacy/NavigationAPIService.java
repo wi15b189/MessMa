@@ -12,7 +12,7 @@ import technikum.at.messma.Service.APIService;
 
 public class NavigationAPIService {
 
-    APIService service = new APIService();
+    //APIService service = new APIService();
 
 
     public List<AccessPoint> getAPs (){

@@ -27,13 +27,17 @@ import technikum.at.messma.Entities.Stand;
 
 
 public class APIService {
-    String baseURL = "https://jpdtdrfg.p55.rt3.io/api/";
+    String baseURL;
 
     private AccessPoint tempAP;
     private List<AccessPoint> tempAPList;
     private Stand tempStand;
     private List<Stand> tempStandList;
     private static final String TAG = APIService.class.getSimpleName();
+
+    public APIService(String baseUrl) {
+        this.baseURL = baseUrl+"/api/";
+    }
 
     public List<AccessPoint> getAccessPoints() {
         tempAPList = new LinkedList<>();
@@ -217,4 +221,5 @@ public class APIService {
         temp.add(standGP);
         return temp;*/
     }
+
 }

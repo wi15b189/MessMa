@@ -10,7 +10,7 @@ import java.util.List;
 import technikum.at.messma.Entities.AccessPoint;
 
 
-class AccessPointKeeper {
+public class AccessPointKeeper {
     private List<ScanResult> currentlyReceivedAccessPoints;
     private boolean mode_filtered_on;
     private List<AccessPoint> ourAccessPoints;
