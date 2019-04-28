@@ -1,7 +1,6 @@
 package technikum.at.messma;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,11 +10,8 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,19 +21,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import technikum.at.messma.Entities.AccessPoint;
 import technikum.at.messma.Entities.GridPoint;
 import technikum.at.messma.Entities.Stand;
 import technikum.at.messma.Service.APIService;
+import technikum.at.messma.Service.AccessPointKeeper;
+import technikum.at.messma.Service.RemoteItHandler;
 import technikum.at.messma.Views.PathView;
-import android.bluetooth.BluetoothManager;
+
 public class MainActivity extends Activity {
 
-    //declare wifi stuff
-    WifiManager wifi;
+    //declare wifiManager stuff
+    WifiManager wifiManager;
     List<ScanResult> results;
     int size = 0;
     List<AccessPoint> accessPoints;
@@ -50,11 +47,13 @@ public class MainActivity extends Activity {
     private List<Stand> stands;
     private List<AccessPoint> knownAccessPoints;
     private List<GridPoint> tmpGridPoints;
+    private AccessPointKeeper apKeeper;
 
     //declare api service helper
-    private APIService api = new APIService();
+    private APIService api;
+    private String baseUrl;
+    private RemoteItHandler remoteUrlHandler;
     private Navigate nav;
-    private Runnable action;
 
     //declare button stuff
     private LinearLayout linearLayout;
@@ -73,17 +72,14 @@ public class MainActivity extends Activity {
         navPath = findViewById(R.id.navpath);
 
         //init shared data
-        stands = new ArrayList<>();
-        new getStandData().execute();
-        knownAccessPoints = new ArrayList<>();
-        new getAPData().execute();
+        remoteUrlHandler = new RemoteItHandler();
+        new getServerUrl().execute();
 
-
-        //Init wifi
-        wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if (wifi.isWifiEnabled() == false) {
-            Toast.makeText(getApplicationContext(), "wifi is disabled..making it enabled", Toast.LENGTH_LONG).show();
-            wifi.setWifiEnabled(true);
+        //Init wifiManager
+        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (wifiManager.isWifiEnabled() == false) {
+            Toast.makeText(getApplicationContext(), "wifiManager is disabled..making it enabled", Toast.LENGTH_LONG).show();
+            wifiManager.setWifiEnabled(true);
         }
         registerReceiver(new BroadcastReceiver() {
             @Override
@@ -133,10 +129,10 @@ public class MainActivity extends Activity {
         buttonClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                wifi.startScan();
+                wifiManager.startScan();
                 try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
+                    //Thread.sleep(500);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 if (accessPoints != null) {
@@ -157,7 +153,7 @@ public class MainActivity extends Activity {
 
 
     private void scanWifi() {
-        results = wifi.getScanResults();
+        results = wifiManager.getScanResults();
         size = results.size();
         accessPoints = new ArrayList<>();
         Toast.makeText(this, "Scanning...." + size, Toast.LENGTH_SHORT).show();
@@ -175,6 +171,27 @@ public class MainActivity extends Activity {
         }
     }
 
+    private class getServerUrl extends AsyncTask<Void, Void, String> {
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            String temp = remoteUrlHandler.getRemoteUrl();
+            return temp;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            //super.onPostExecute(result);
+            baseUrl = result;
+            api = new APIService(baseUrl);
+            stands = new ArrayList<>();
+            new getStandData().execute();
+            knownAccessPoints = new ArrayList<>();
+            new getAPData().execute();
+        }
+    }
+
+
     private class getAPData extends AsyncTask<Void, Void, List<AccessPoint>> {
 
         @Override
@@ -183,8 +200,9 @@ public class MainActivity extends Activity {
             return knownAccessPoints;
         }
 
+        @Override
         protected void onPostExecute(List<AccessPoint> result) {
-            super.onPostExecute(result);
+            //super.onPostExecute(result);
         }
     }
 
@@ -196,9 +214,10 @@ public class MainActivity extends Activity {
             return stands;
         }
 
+        @Override
         protected void onPostExecute(List<Stand> result) {
             generateButtons();
-            super.onPostExecute(result);
+            //super.onPostExecute(result);
         }
     }
 
@@ -235,12 +254,12 @@ public class MainActivity extends Activity {
 
         @Override
         protected void onPostExecute(final Stand tmpStand) {
-            super.onPostExecute(tmpStand);
+            //super.onPostExecute(tmpStand);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     // Stuff that updates the UI
-                    if (tmpGridPoints!= null && tmpGridPoints.size() > 1) {
+                    if (tmpGridPoints != null && tmpGridPoints.size() > 1) {
                         mTextMessage.setText("Navigation nach " + tmpStand.getName() + " gestartet. - " + tmpStand.getDescription());
                         mTextMessage.invalidate();
                     } else {
@@ -249,10 +268,6 @@ public class MainActivity extends Activity {
                     }
                 }
             });
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-            //Toast.makeText(getApplicationContext(), "Scanning "+ progress[0]+ "Access Points", Toast.LENGTH_SHORT).show();
         }
     }
 
