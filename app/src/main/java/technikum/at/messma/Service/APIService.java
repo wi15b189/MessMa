@@ -25,13 +25,9 @@ import technikum.at.messma.Entities.AccessPoint;
 import technikum.at.messma.Entities.GridPoint;
 import technikum.at.messma.Entities.Stand;
 
+
 public class APIService {
-    //Laci
-     String baseURL = "http://192.168.0.241:9000/api/";
-    //Home
-    //String baseURL = "http://192.168.0.186:9000/api/";
-    //FH
-    //String baseURL = "http://10.202.233.106:9000/api/";
+    String baseURL = "https://jpdtdrfg.p55.rt3.io/api/";
 
     private AccessPoint tempAP;
     private List<AccessPoint> tempAPList;
@@ -180,8 +176,8 @@ public class APIService {
             destination.put("destination", standGP.getIdGridPoint());
             for (AccessPoint AP : accessPoints) {
                 JSONObject postData = new JSONObject();
-                postData.put("mac", AP.getIdMac());
-                postData.put("power", String.valueOf(AP.getSignal()));
+                postData.put("mac", AP.getMAC());
+                postData.put("power", String.valueOf(AP.getAverageSignal()));
                 temp.put(postData);
             }
             destination.put("ReceivedSignals", temp);
@@ -204,8 +200,8 @@ public class APIService {
                 for (int i = 0; i < data.length(); i++) {
                     JSONObject d = data.getJSONObject(i);
                     String idGP = d.getString("id");
-                    int posx = (int) (d.getInt("posY") * 1.35);
-                    int posy = (int) (d.getInt("posX") * 1.35);
+                    int posx = (int) (d.getInt("posY") * 1);
+                    int posy = (int) (d.getInt("posX") * 1);
                     tmpGP.add(new GridPoint(idGP, posx, posy));
                 }
             } catch (final JSONException e) {

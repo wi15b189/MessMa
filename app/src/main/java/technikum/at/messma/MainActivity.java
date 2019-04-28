@@ -1,6 +1,7 @@
 package technikum.at.messma;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -32,7 +33,7 @@ import technikum.at.messma.Entities.GridPoint;
 import technikum.at.messma.Entities.Stand;
 import technikum.at.messma.Service.APIService;
 import technikum.at.messma.Views.PathView;
-
+import android.bluetooth.BluetoothManager;
 public class MainActivity extends Activity {
 
     //declare wifi stuff
@@ -91,6 +92,7 @@ public class MainActivity extends Activity {
                 //unregisterReceiver(this);
             }
         }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+
 
         //init buttons
         generateHorizontalView();
@@ -158,14 +160,14 @@ public class MainActivity extends Activity {
         results = wifi.getScanResults();
         size = results.size();
         accessPoints = new ArrayList<>();
-        //Toast.makeText(this, "Scanning...." + size, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Scanning...." + size, Toast.LENGTH_SHORT).show();
         size = size - 1;
         while (size >= 0) {
             AccessPoint ap = new AccessPoint(results.get(size).BSSID, results.get(size).level);
             //accessPoints.add(ap); //nur einschalten wenn filtern aus ist
             //FILTERN
             for (AccessPoint tmpAp : knownAccessPoints) {
-                if (tmpAp.getIdMac().equals(ap.getIdMac())) {
+                if (tmpAp.getMAC().equals(ap.getMAC())) {
                     accessPoints.add(ap);
                 }
             }
